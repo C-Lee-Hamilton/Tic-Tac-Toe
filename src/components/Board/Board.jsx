@@ -9,9 +9,40 @@ export const Board = (props) => {
   );
   const [move, setMove] = useState("X");
   const [game, setGame] = useState(true);
+  const [winner, setWinner] = useState(false);
+  const [wintext, setWintext] = useState(" ");
+  const firstRow = [
+    board[0][0].player,
+    board[0][1].player,
+    board[0][2].player,
+  ].toString();
+  const secondRow = [
+    board[1][0].player,
+    board[1][1].player,
+    board[1][2].player,
+  ].toString();
+  const thirdRow = [
+    board[2][0].player,
+    board[2][1].player,
+    board[2][2].player,
+  ].toString();
 
   const checkWin = () => {
     // Your code here
+    console.log(firstRow);
+    console.log(secondRow);
+    console.log(thirdRow);
+    if (firstRow === "X,X,X") {
+      setWinner(true);
+      setWintext("You Win");
+    } else {
+      console.log("nothing yet");
+    }
+
+    // firstRow == "X,X,X" ? setWinner(true) : console.log("nope");
+    // secondRow == "X,X,X" ? setWinner(true) : console.log("not yet");
+    // thirdRow == "X,X,X" ? setWinner(true) : console.log("nope");
+    console.log(winner);
   };
 
   const play = (row, col) => {
@@ -23,6 +54,8 @@ export const Board = (props) => {
   };
 
   const newGame = () => {
+    setWinner(false);
+    setWintext(" ");
     setMove("X");
     setBoard(
       Array.from({ length: 3 }, () =>
@@ -51,6 +84,7 @@ export const Board = (props) => {
         );
       })}
       <button onClick={newGame}>New</button>
+      {wintext}
     </div>
   );
 };
