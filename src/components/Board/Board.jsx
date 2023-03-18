@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./Board.css";
 
 export const Board = (props) => {
@@ -10,59 +10,65 @@ export const Board = (props) => {
   const [move, setMove] = useState("X");
   const [game, setGame] = useState(true);
   const [winner, setWinner] = useState(false);
-  const [wintext, setWintext] = useState(" ");
-  const firstRow = [
-    board[0][0].player,
-    board[0][1].player,
-    board[0][2].player,
-  ].toString();
-  const secondRow = [
-    board[1][0].player,
-    board[1][1].player,
-    board[1][2].player,
-  ].toString();
-  const thirdRow = [
-    board[2][0].player,
-    board[2][1].player,
-    board[2][2].player,
-  ].toString();
+
+  useEffect(() => {
+    checkWin();
+  }, [board]);
+
+  useEffect(() => {
+    winner && setGame(false);
+    console.log("Winner ", winner);
+  }, [winner]);
 
   const checkWin = () => {
     // Your code here
-    console.log(firstRow);
-    console.log(secondRow);
-    console.log(thirdRow);
-    if (firstRow === "X,X,X") {
-      setWinner(true);
-      setWintext("You Win");
-    } else {
-      console.log("nothing yet");
+
+    //rows
+    board.forEach((row) => {
+      row[0].player &&
+        row[0].player === row[1].player &&
+        row[0].player === row[2].player &&
+        setWinner(row[0].player);
+    });
+
+    //cols
+    for (let i = 0; i < 3; i++) {
+      board[0][i].player &&
+        board[0][i].player === board[1][i].player &&
+        board[0][i].player === board[2][i].player &&
+        setWinner(board[0][i].player);
     }
 
-    // firstRow == "X,X,X" ? setWinner(true) : console.log("nope");
-    // secondRow == "X,X,X" ? setWinner(true) : console.log("not yet");
-    // thirdRow == "X,X,X" ? setWinner(true) : console.log("nope");
-    console.log(winner);
+    //cross
+    board[0][0].player &&
+      board[0][0].player === board[1][1].player &&
+      board[0][0].player === board[2][2].player &&
+      setWinner(board[0][0].player);
+
+    board[0][2].player &&
+      board[0][2].player === board[1][1].player &&
+      board[0][2].player === board[2][0].player &&
+      setWinner(board[0][2].player);
   };
 
   const play = (row, col) => {
     const temp = [...board];
     temp[row][col] = { player: move };
     setBoard(temp);
-    checkWin();
     setMove(move === "X" ? "O" : "X");
   };
 
   const newGame = () => {
+    console.log("New Game!");
     setWinner(false);
-    setWintext(" ");
+
     setMove("X");
     setBoard(
       Array.from({ length: 3 }, () =>
         Array.from({ length: 3 }, () => ({ player: null }))
       )
     );
-    setGame(game);
+    setGame(true);
   };
   return (
     <div className="gameboard">
@@ -84,7 +90,6 @@ export const Board = (props) => {
         );
       })}
       <button onClick={newGame}>New</button>
-      {wintext}
     </div>
   );
 };
