@@ -1,0 +1,18 @@
+.score {
+  background-color: black;
+  border: 10px ridge grey;
+  margin-top: 20px;
+  width: 150px;
+  height: 150px;
+  position: relative;
+  align-self: center;
+  font-size: 25px;
+}
+
+.innerscore {
+  border: 1px solid red;
+  margin-top: 10px;
+  margin-left: 15%;
+  width: 100px;
+  height: 100px;
+}

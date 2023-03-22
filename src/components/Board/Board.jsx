@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./Board.css";
+import { ScoreBoard } from "./Score";
 
 export const Board = (props) => {
   const [board, setBoard] = useState(
@@ -10,6 +11,11 @@ export const Board = (props) => {
   const [move, setMove] = useState("X");
   const [game, setGame] = useState(true);
   const [winner, setWinner] = useState(false);
+  const [xScore, setXScore] = useState(0);
+  const [oScore, setOScore] = useState(0);
+  const [toggle, setToggle] = useState(false);
+  const [tieToggle, setTieToggle] = useState(false);
+  const [tie, setTie] = useState(0);
 
   useEffect(() => {
     checkWin();
@@ -18,6 +24,17 @@ export const Board = (props) => {
   useEffect(() => {
     winner && setGame(false);
     console.log("Winner ", winner);
+
+    console.log(game);
+    if (winner === "X") {
+      setXScore(xScore + 1);
+      setToggle(true);
+    } else if (winner === "O") {
+      setOScore(oScore + 1);
+      setToggle(true);
+    } else {
+      //do nothing
+    }
   }, [winner]);
 
   const checkWin = () => {
@@ -31,6 +48,8 @@ export const Board = (props) => {
         setWinner(row[0].player);
     });
 
+    //ties
+    // console.log(board[0][1].game);
     //cols
     for (let i = 0; i < 3; i++) {
       board[0][i].player &&
@@ -56,12 +75,20 @@ export const Board = (props) => {
     temp[row][col] = { player: move };
     setBoard(temp);
     setMove(move === "X" ? "O" : "X");
+    setTie(tie + 1);
+    console.log(tie);
+    if (tie === 8) {
+      setTieToggle(true);
+    } else {
+    }
   };
 
   const newGame = () => {
     console.log("New Game!");
     setWinner(false);
-
+    setToggle(false);
+    setTieToggle(false);
+    setTie(0);
     setMove("X");
     setBoard(
       Array.from({ length: 3 }, () =>
@@ -77,7 +104,7 @@ export const Board = (props) => {
           <div key={rowIndex}>
             {row.map((square, sqIndex) => (
               <div
-                onClick={() => {
+                onMouseDown={() => {
                   game && !square.player && play(rowIndex, sqIndex);
                 }}
                 key={sqIndex}
@@ -89,7 +116,23 @@ export const Board = (props) => {
           </div>
         );
       })}
-      <button onClick={newGame}>New</button>
+      {toggle && (
+        <div className="popup">
+          <h1>{winner}'s win!</h1>
+          <button className="reset" onClick={newGame}>
+            New Game
+          </button>
+        </div>
+      )}
+      {tieToggle && (
+        <div className="popup">
+          <h1>Tie!</h1>
+          <button className="reset" onClick={newGame}>
+            New Game
+          </button>
+        </div>
+      )}
+      <ScoreBoard xScore={xScore} oScore={oScore} />
     </div>
   );
 };
